@@ -267,6 +267,41 @@ def change_email():
     return render_template('auth/change_email.html', form=form)
 
 
+@auth.route('/delete_account', methods=['GET', 'POST'])
+@login_required
+def delete_account():
+    from app.models import Character, Party
+    
+    form = PasswordUpdateForm()
+    if form.validate_on_submit():
+        if current_user.verify_password(form.old_password.data):
+            user_id = current_user.id
+            username = current_user.username
+            
+            # Delete all user's characters
+            Character.query.filter_by(owner=user_id).delete()
+            
+            # Delete all user's parties
+            Party.query.filter_by(owner=user_id).delete()
+            
+            # Delete the user account
+            db.session.delete(current_user)
+            db.session.commit()
+            
+            logout_user()
+            flash(f'Account {username} has been permanently deleted.', 'success')
+            return redirect(url_for('main.index'))
+        else:
+            flash('Invalid password.', 'error')
+            return redirect(url_for('auth.delete_account'))
+    elif form.submit2.data:
+        for _, errors in form.errors.items():
+            for error in errors:
+                flash(error, 'error')
+    
+    return render_template('auth/delete_account.html', form=form)
+
+
 # ________________ CAPTCHA STUFF __________________________________
 
 def create_assessment(

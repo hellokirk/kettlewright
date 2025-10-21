@@ -1,0 +1,25 @@
+// Account management styles
+
+// Warning notification with padding
+.notification.is-warning {
+  padding: 24px; 
+  background-color: var(--bg) !important;
+}
+
+// Warning list styling
+.warning-list {
+  margin-top: 10px;
+  margin-left: 20px;
+}
+
+// Button group with equal flex
+.button-group-equal {
+  .button {
+    flex: 1;
+  }
+}
+
+// Notification spacing
+.notification-spaced {
+  margin-top: 1em;
+}

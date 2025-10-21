@@ -1,0 +1,52 @@
+{% extends "base.html" %} {% block content %}
+
+<script>
+function confirmDelete(event) {
+  if (!confirm('{{_("Are you sure you want to permanently delete your account? This action cannot be undone. All your characters and parties will be deleted.")}}')) {
+    event.preventDefault();
+    return false;
+  }
+  return true;
+}
+</script>
+
+<div class="body-container auth-container">
+  <form class="card auth-card" method="post" onsubmit="return confirmDelete(event);">
+    {{ form.hidden_tag() }}
+    <h3 class="auth-title is-danger">{{_('Delete Account')}}</h3>
+    
+    <div class="notification is-warning">
+      <p><strong>{{_('Warning:')}}</strong> {{_('This action is permanent and cannot be undone.')}}</p>
+      <ul class="warning-list">
+        <li>{{_('All your characters will be deleted')}}</li>
+        <li>{{_('All your parties will be deleted')}}</li>
+        <li>{{_('Your account will be permanently removed')}}</li>
+      </ul>
+    </div>
+
+    <p>{{_('Please enter your password to confirm account deletion:')}}</p>
+
+    <div class="field">
+      <div class="control">{{ form.old_password(class="input", placeholder=_("Current Password")) }}</div>
+    </div>
+
+    <div class="flex-row button-group-equal">
+      <a href="{{ url_for('auth.account') }}" class="button is-block is-light">{{_('Cancel')}}</a>
+      <button type="submit" class="button is-block is-danger">{{_("Delete Account")}}</button>
+    </div>
+
+    {% with messages = get_flashed_messages(category_filter=['error']) %} 
+    {% if messages %}
+    <div class="notification is-danger notification-spaced">{{ messages[0] }}</div>
+    {% endif %} 
+    {% endwith %} 
+    
+    {% with messages = get_flashed_messages(category_filter=['success']) %} 
+    {% if messages %}
+    <div class="notification is-success notification-spaced">{{ messages[0] }}</div>
+    {% endif %} 
+    {% endwith %}
+  </form>
+</div>
+
+{% endblock %}
